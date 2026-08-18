@@ -30,6 +30,15 @@ summary = aria.run(steps=1000, config=aria.Config(schedule="opmd"))
 # {'steps': 1000, 't': 250, 'graph_size': 250, 'energy': 1.0, 'invariants_ok': True, ...}
 
 jsonl = aria.run_trace_jsonl(steps=1000)  # identical to `aria run --output trace.jsonl`
+
+# Post-hoc decode (𝔸5 / 𝕃5) — the same seam `aria emit` and the WASM
+# `emitIds` use, now reachable from a notebook too.
+zs = aria.latents(steps=1000, config=aria.Config(schedule="opmd"))
+readout = aria.Readout.seeded_discrete(dim=32, vocab_size=256, temperature=1.0, seed=3)
+ids = [readout.decode_id(z) for z in zs]
+
+tokenizer = aria.Tokenizer.train(corpus=open("corpus.txt", "rb").read(), vocab_size=4096)
+pieces = [tokenizer.decode_one(i) for i in ids]
 ```
 
 ## API
@@ -42,6 +51,9 @@ jsonl = aria.run_trace_jsonl(steps=1000)  # identical to `aria run --output trac
 | `aria.InvariantReport` | `inv1`–`inv4`, `all_ok`, `failures` |
 | `aria.run(steps, config)` | Summary dict for a full run |
 | `aria.run_trace_jsonl(steps, config)` | JSONL trace string |
+| `aria.latents(steps, config)` | Post-step `z` for every action — the `emit` replay seam |
+| `aria.Readout` | `from_file`/`from_bytes`/`seeded_discrete`/`seeded_continuous`; `decode_id`, `probs`, `logits`, `emit`, `to_bytes`, `to_file` |
+| `aria.Tokenizer` | `bytes_identity`/`train`/`from_file`/`from_json`; `encode`, `decode_one`, `decode`, `to_json`, `to_file` |
 | `aria.actions()` | `["OpticalStep", "Predict", "Match", "Diffuse", "Stutter"]` |
 
 ## Test
