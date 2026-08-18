@@ -34,8 +34,8 @@ pub use readout::{
     VOCAB_MAX, VOCAB_MIN,
 };
 pub use runner::{
-    engine_with, latents_of, run, run_with, run_with_graph, sim_engine, RefPredictor, RunOutcome,
-    RunSummary, SimEngine,
+    engine_with, latents_of, latents_with, run, run_with, run_with_graph, sim_engine,
+    RefPredictor, RunOutcome, RunSummary, SimEngine,
 };
 pub use tokenizer::{BpeTokenizer, TOKENIZER_FORMAT};
 pub use spectral::{
